@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login and Logout Page</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: rgb(222, 219, 219);
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            width: 300px;
+            text-align: center;
+        }
+        .container h2 {
+            margin-bottom: 20px;
+        }
+        .container input {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid rgb(222, 219, 219);
+            border-radius: 3px;
+        }
+        .container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 3px;
+            background-color: green;
+            color: rgb(222, 219, 219);
+            font-size: 16px;
+        }
+        .container button:hover {
+            background-color: green;
+        }
+        .logout-container {
+            display: none;
+        }
+        .logout-container button {
+            background-color: red;
+        }
+        .logout-container button:hover {
+            background-color: r;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container" id="login-container">
+        <h2>Login</h2>
+        <input type="text" placeholder="Username" id="username" style="width: 280px;">
+        <input type="password" placeholder="Password" id="password" style="width: 280px;" >
+        <button onclick="login()">Login</button>
+    </div>
+
+    <script>
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+            if (username && password) {
+            event.preventDefault();
+            window.location.href = 'index.html';
+            } else {
+                alert('Please enter both username and password.');
+            }
+        }
+    </script>
+
+</body>
+</html>
