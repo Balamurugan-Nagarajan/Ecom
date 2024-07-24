@@ -8,8 +8,8 @@
     <style>
         body {
             font-family: Arial, sans-serif;
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: white;
+            color: gray;
             margin: 0;
             padding: 20px;
         }
@@ -21,9 +21,8 @@
             display: flex;
             align-items: center;
             margin-bottom: 20px;
-            border-bottom: 1px solid #ddd;
             padding-bottom: 10px;
-            background-color: #fff;
+            background-color: white;
             padding: 10px;
         }
         .cart-item img {
@@ -37,49 +36,53 @@
         }
         .cart-item .info h3 {
             margin: 0 0 10px;
-            color: #333;
+            color: black;
         }
         .cart-item .info p {
             margin: 0;
-            color: #777;
+            color: gray;
         }
         button {
             display: block;
             width: 200px;
             margin: 20px auto;
             padding: 10px;
-            background-color: #333;
+            background-color: black;
             color: white;
             border: none;
             cursor: pointer;
             font-size: 16px;
         }
         button:hover {
-            background-color: #555;
+            background-color: gray;
         }
     </style>
 </head>
 <body>
     <h1>Your Cart</h1>
-    <div id="cartItem"></div>
+    <div id="cartItemsContainer"></div>
     <button onclick="window.location.href='../index.html'">Continue Shopping</button>
     <script>
         window.onload = function() {
-            const cartItem = JSON.parse(localStorage.getItem('cartItem'));
-            const cartItemContainer = document.getElementById('cartItem');
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
 
-            if (cartItem) {
-                const itemElement = document.createElement('div');
-                itemElement.className = 'cart-item';
+            if (cartItems.length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+            } else {
+                cartItems.forEach(item => {
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
 
-                itemElement.innerHTML = `
-                    <img src="${cartItem.image}" alt="Item Image">
-                    <div class="info">
-                        <h3>Price: ${cartItem.price}</h3>
-                        <p>${cartItem.description}</p>
-                    </div>
-                `;
-                cartItemContainer.appendChild(itemElement);
+                    itemElement.innerHTML = `
+                        <img src="${item.image}" alt="Item Image">
+                        <div class="info">
+                            <h3>Price: ${item.price}</h3>
+                            <p>${item.description}</p>
+                        </div>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                });
             }
         }
     </script>
