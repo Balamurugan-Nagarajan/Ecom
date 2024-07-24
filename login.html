@@ -57,7 +57,7 @@
 </head>
 <body>
 
-    <div class="container" id="login-container">
+    <div class="container">
         <h2>Login</h2>
         <input type="text" placeholder="Username" id="username" style="width: 280px;">
         <input type="password" placeholder="Password" id="password" style="width: 280px;" >
@@ -66,14 +66,60 @@
 
     <script>
         function login() {
-            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
-            if (username && password) {
-            event.preventDefault();
-            window.location.href = 'index.html';
-            } else {
-                alert('Please enter both username and password.');
+
+            if (!validateEmail(email)) {
+                alert('Please enter a valid email address.');
+                return;
             }
+
+            if (!validatePassword(password)) {
+                alert('Password must be at least 8 characters long, contain at least one number and one uppercase letter.');
+                return;
+            }
+
+            window.location.href = 'index.html';
+        }
+
+        function validateEmail(email) {
+            if (email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+                return false;
+            }
+            if (email.indexOf('@') < 1 || email.lastIndexOf('.') < email.indexOf('@') + 2 || email.lastIndexOf('.') + 2 >= email.length) {
+                return false;
+            }
+            return true;
+        }
+
+        function validatePassword(password) {
+            if (password.length < 8) {
+                return false;
+            }
+
+            let hasUppercase = false;
+            for (let i = 0; i < password.length; i++) {
+                if (password[i] >= 'A' && password[i] <= 'Z') {
+                    hasUppercase = true;
+                    break;
+                }
+            }
+            if (!hasUppercase) {
+                return false;
+            }
+
+            let hasDigit = false;
+            for (let i = 0; i < password.length; i++) {
+                if (password[i] >= '0' && password[i] <= '9') {
+                    hasDigit = true;
+                    break;
+                }
+            }
+            if (!hasDigit) {
+                return false;
+            }
+
+            return true;
         }
     </script>
 
