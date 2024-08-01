@@ -1,9 +1,10 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <title>Cart</title>
     <style>
         body {
@@ -24,7 +25,9 @@
             padding-bottom: 10px;
             background-color: white;
             padding: 10px;
+            position: relative;
         }
+
         .cart-item img {
             width: 100px;
             height: auto;
@@ -33,6 +36,7 @@
         .cart-item .info {
             display: flex;
             flex-direction: column;
+            margin-right: auto;
         }
         .cart-item .info h3 {
             margin: 0 0 10px;
@@ -61,29 +65,177 @@
 <body>
     <h1>Your Cart</h1>
     <div id="cartItemsContainer"></div>
-    <button onclick="window.location.href='../index.html'">Continue Shopping</button>
+    <button onclick="window.location.href='shop.html'">Continue Shopping</button>
     <script>
         window.onload = function() {
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const cartItemsContainer = document.getElementById('cartItemsContainer');
+            const itemCount = {};
 
-            if (cartItems.length === 0) {
+            cartItems.forEach(item => {
+                itemCount[item.title] = (itemCount[item.title] || 0) + 1;
+            });
+            if (Object.keys(itemCount).length === 0) {
                 cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
             } else {
-                cartItems.forEach(item => {
+                cartItemsContainer.innerHTML = '';
+
+                for (const [title, quantity] of Object.entries(itemCount)) {
+                    const item = cartItems.find(item => item.title === title);
                     const itemElement = document.createElement('div');
                     itemElement.className = 'cart-item';
 
                     itemElement.innerHTML = `
                         <img src="${item.image}" alt="Item Image">
                         <div class="info">
-                            <h3>Price: ${item.price}</h3>
-                            <p>${item.description}</p>
+                            <h3>${title}</h3>
+                            <p>Quantity: ${quantity}</p>
                         </div>
+                        <i class="fa-solid fa-xmark" data-title="${title}"></i>
                     `;
                     cartItemsContainer.appendChild(itemElement);
+                }
+
+                document.querySelectorAll('.cart-item i').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const title = this.getAttribute('data-title');
+                        removeItem(title);
+                    });
                 });
             }
+        };
+
+        function removeItem(title) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            cartItems = cartItems.filter(item => item.title !== title);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            window.location.reload();
+        }
+    </script>
+</body>
+</html> -->
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <title>Cart</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: white;
+            color: gray;
+            margin: 0;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #000;
+        }
+        .cart-item {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            background-color: white;
+            padding: 10px;
+            position: relative;
+        }
+
+        .cart-item img {
+            width: 100px;
+            height: auto;
+            margin-right: 20px;
+        }
+        .cart-item .info {
+            display: flex;
+            flex-direction: column;
+            margin-right: auto;
+        }
+        .cart-item .info h3 {
+            margin: 0 0 10px;
+            color: black;
+        }
+        .cart-item .info p {
+            margin: 0;
+            color: gray;
+        }
+        button {
+            display: block;
+            width: 200px;
+            margin: 20px auto;
+            padding: 10px;
+            background-color: black;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        button:hover {
+            background-color: gray;
+        }
+    </style>
+</head>
+<body>
+    <h1>Your Cart</h1>
+    <div id="cartItemsContainer"></div>
+    <h2 id="totalPrice">Total Price: $0.00</h2>
+    <button onclick="window.location.href='shop.html'">Continue Shopping</button>
+    <script>
+        window.onload = function() {
+
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const cartItemsContainer = document.getElementById('cartItemsContainer');
+            const totalPriceElement = document.getElementById('totalPrice');
+            const itemCount = {};
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                itemCount[item.title] = (itemCount[item.title] || 0) + 1;
+                totalPrice += item.price;
+            });
+            totalPriceElement.textContent = `Total Price: $${totalPrice.toFixed(2)}`;
+
+            if (Object.keys(itemCount).length === 0) {
+                cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
+            } else {
+                cartItemsContainer.innerHTML = '';
+                for (const [title, quantity] of Object.entries(itemCount)) {
+                    const item = cartItems.find(item => item.title === title);
+                    const itemElement = document.createElement('div');
+                    itemElement.className = 'cart-item';
+
+                    itemElement.innerHTML = `
+                        <img src="${item.image}" alt="Item Image">
+                        <div class="info">
+                            <h3>${title}</h3>
+                            <p>Quantity: ${quantity}</p>
+                        </div>
+                        <i class="fa-solid fa-xmark" data-title="${title}"></i>
+                    `;
+                    cartItemsContainer.appendChild(itemElement);
+                }
+
+
+                document.querySelectorAll('.cart-item i').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const title = this.getAttribute('data-title');
+                        removeItem(title);
+                    });
+                });
+            }
+        };
+
+        function removeItem(title) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            cartItems = cartItems.filter(item => item.title !== title);
+            localStorage.setItem('cartItems', JSON.stringify(cartItems));
+            window.location.reload();
         }
     </script>
 </body>

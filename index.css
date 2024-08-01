@@ -92,6 +92,7 @@ ul li i:hover {
 .card {
   display: flex;
   justify-content: space-around;
+  flex-wrap:wrap;
 }
 
 .crd {
@@ -99,6 +100,8 @@ ul li i:hover {
   height: 550px;
   background-color: #fff;
   margin-inline: 11px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+
 }
 .crd img {
   width: 85%;
@@ -196,12 +199,12 @@ ul li i:hover {
   margin-right: 20px;
 }
 
-/* Text section styling */
+
 .cartText {
   flex: 1;
 }
 
-/* Heading styling */
+
 .cartText h1 {
   font-size: 24px;
   font-weight: bold;
@@ -215,14 +218,26 @@ ul li i:hover {
   margin: 5px 0;
 }
 
-/* Paragraph styling */
+
 .cartText p {
   font-size: 16px;
-  color: #666;
+  color: black;
   margin: 5px 0;
 }
+.crdPrice {
+  font-size: 18px;
+  color: green;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
 
-/* Button styling */
+.crdDes {
+  font-size: 14px;
+  color: black;
+  margin-bottom: 8px;
+}
+
+
 .btn {
   margin-top: 15px;
 }
@@ -331,3 +346,4 @@ ul li i:hover {
 .txt a:hover {
   background-color: gray;
 }
+
