@@ -1,122 +1,3 @@
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-    <title>Cart</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: white;
-            color: gray;
-            margin: 0;
-            padding: 20px;
-        }
-        h1 {
-            text-align: center;
-            color: #000;
-        }
-        .cart-item {
-            display: flex;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            background-color: white;
-            padding: 10px;
-            position: relative;
-        }
-
-        .cart-item img {
-            width: 100px;
-            height: auto;
-            margin-right: 20px;
-        }
-        .cart-item .info {
-            display: flex;
-            flex-direction: column;
-            margin-right: auto;
-        }
-        .cart-item .info h3 {
-            margin: 0 0 10px;
-            color: black;
-        }
-        .cart-item .info p {
-            margin: 0;
-            color: gray;
-        }
-        button {
-            display: block;
-            width: 200px;
-            margin: 20px auto;
-            padding: 10px;
-            background-color: black;
-            color: white;
-            border: none;
-            cursor: pointer;
-            font-size: 16px;
-        }
-        button:hover {
-            background-color: gray;
-        }
-    </style>
-</head>
-<body>
-    <h1>Your Cart</h1>
-    <div id="cartItemsContainer"></div>
-    <button onclick="window.location.href='shop.html'">Continue Shopping</button>
-    <script>
-        window.onload = function() {
-            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            const cartItemsContainer = document.getElementById('cartItemsContainer');
-            const itemCount = {};
-
-            cartItems.forEach(item => {
-                itemCount[item.title] = (itemCount[item.title] || 0) + 1;
-            });
-            if (Object.keys(itemCount).length === 0) {
-                cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
-            } else {
-                cartItemsContainer.innerHTML = '';
-
-                for (const [title, quantity] of Object.entries(itemCount)) {
-                    const item = cartItems.find(item => item.title === title);
-                    const itemElement = document.createElement('div');
-                    itemElement.className = 'cart-item';
-
-                    itemElement.innerHTML = `
-                        <img src="${item.image}" alt="Item Image">
-                        <div class="info">
-                            <h3>${title}</h3>
-                            <p>Quantity: ${quantity}</p>
-                        </div>
-                        <i class="fa-solid fa-xmark" data-title="${title}"></i>
-                    `;
-                    cartItemsContainer.appendChild(itemElement);
-                }
-
-                document.querySelectorAll('.cart-item i').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const title = this.getAttribute('data-title');
-                        removeItem(title);
-                    });
-                });
-            }
-        };
-
-        function removeItem(title) {
-            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
-            cartItems = cartItems.filter(item => item.title !== title);
-            localStorage.setItem('cartItems', JSON.stringify(cartItems));
-            window.location.reload();
-        }
-    </script>
-</body>
-</html> -->
-
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -146,7 +27,6 @@
             padding: 10px;
             position: relative;
         }
-
         .cart-item img {
             width: 100px;
             height: auto;
@@ -164,6 +44,24 @@
         .cart-item .info p {
             margin: 0;
             color: gray;
+        }
+        .cart-item .quantity-controls {
+            display: flex;
+            align-items: center;
+        }
+        .cart-item .quantity-controls button {
+            width: 30px;
+            height: 30px;
+            background-color: gray;
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-size: 16px;
+            margin: 0 5px;
+        }
+        .cart-item .quantity-controls span {
+            font-size: 16px;
+            color: black;
         }
         button {
             display: block;
@@ -188,7 +86,6 @@
     <button onclick="window.location.href='shop.html'">Continue Shopping</button>
     <script>
         window.onload = function() {
-
             const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             const cartItemsContainer = document.getElementById('cartItemsContainer');
             const totalPriceElement = document.getElementById('totalPrice');
@@ -196,31 +93,53 @@
             let totalPrice = 0;
 
             cartItems.forEach(item => {
-                itemCount[item.title] = (itemCount[item.title] || 0) + 1;
+                itemCount[item.title] = itemCount[item.title] || {
+                    ...item,
+                    quantity: 0
+                };
+                itemCount[item.title].quantity += 1;
                 totalPrice += item.price;
             });
+
             totalPriceElement.textContent = `Total Price: $${totalPrice.toFixed(2)}`;
 
             if (Object.keys(itemCount).length === 0) {
                 cartItemsContainer.innerHTML = '<p>Your cart is empty.</p>';
             } else {
                 cartItemsContainer.innerHTML = '';
-                for (const [title, quantity] of Object.entries(itemCount)) {
-                    const item = cartItems.find(item => item.title === title);
+                for (const item of Object.values(itemCount)) {
                     const itemElement = document.createElement('div');
                     itemElement.className = 'cart-item';
 
                     itemElement.innerHTML = `
                         <img src="${item.image}" alt="Item Image">
                         <div class="info">
-                            <h3>${title}</h3>
-                            <p>Quantity: ${quantity}</p>
+                            <h3>${item.title}</h3>
+                            <div class="quantity-controls">
+                                <button class="decrease" data-title="${item.title}">-</button>
+                                <span class="quantity" data-title="${item.title}">Quantity: ${item.quantity}</span>
+                                <button class="increase" data-title="${item.title}">+</button>
+                            </div>
+                            <p class="item-total" data-title="${item.title}">Price: $${(item.price * item.quantity).toFixed(2)}</p>
                         </div>
-                        <i class="fa-solid fa-xmark" data-title="${title}"></i>
+                        <i class="fa-solid fa-xmark" data-title="${item.title}"></i>
                     `;
                     cartItemsContainer.appendChild(itemElement);
                 }
 
+                document.querySelectorAll('.decrease').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const title = this.getAttribute('data-title');
+                        updateQuantity(title, -1);
+                    });
+                });
+
+                document.querySelectorAll('.increase').forEach(button => {
+                    button.addEventListener('click', function() {
+                        const title = this.getAttribute('data-title');
+                        updateQuantity(title, 1);
+                    });
+                });
 
                 document.querySelectorAll('.cart-item i').forEach(button => {
                     button.addEventListener('click', function() {
@@ -231,11 +150,52 @@
             }
         };
 
+        function updateQuantity(title, change) {
+            let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            const index = cartItems.findIndex(item => item.title === title);
+
+            if (index !== -1) {
+                if (change === -1 && cartItems[index].quantity === 1) {
+                    removeItem(title);
+                } else {
+                    cartItems[index].quantity += change;
+                    cartItems[index].quantity = Math.max(cartItems[index].quantity, 0);
+                }
+                localStorage.setItem('cartItems', JSON.stringify(cartItems));
+
+                // Update the DOM elements
+                const quantityElement = document.querySelector(`.quantity[data-title="${title}"]`);
+                const itemTotalElement = document.querySelector(`.item-total[data-title="${title}"]`);
+                const itemPrice = cartItems[index].price;
+                const itemQuantity = cartItems[index].quantity;
+
+                if (quantityElement && itemTotalElement) {
+                    quantityElement.textContent = `Quantity: ${itemQuantity}`;
+                    itemTotalElement.textContent = `Price: $${(itemPrice * itemQuantity).toFixed(2)}`;
+                }
+
+                // Update the total price
+                updateTotalPrice();
+            }
+        }
+
         function removeItem(title) {
             let cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
             cartItems = cartItems.filter(item => item.title !== title);
             localStorage.setItem('cartItems', JSON.stringify(cartItems));
             window.location.reload();
+        }
+
+        function updateTotalPrice() {
+            const cartItems = JSON.parse(localStorage.getItem('cartItems')) || [];
+            let totalPrice = 0;
+
+            cartItems.forEach(item => {
+                totalPrice += item.price * item.quantity;
+            });
+
+            const totalPriceElement = document.getElementById('totalPrice');
+            totalPriceElement.textContent = `Total Price: $${totalPrice.toFixed(2)}`;
         }
     </script>
 </body>
